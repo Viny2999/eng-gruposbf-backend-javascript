@@ -1,0 +1,19 @@
+{
+  "name": "eng-gruposbf-backend-javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Viny2999/eng-gruposbf-backend-javascript.git"
+  },
+  "author": "Viny Menezes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Viny2999/eng-gruposbf-backend-javascript/issues"
+  },
+  "homepage": "https://github.com/Viny2999/eng-gruposbf-backend-javascript#readme"
+}
