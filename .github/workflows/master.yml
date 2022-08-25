@@ -17,5 +17,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Lint Stage
+        run: npm run lint
+
       - name: Test Stage
         run: npm run test
