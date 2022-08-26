@@ -3,7 +3,7 @@ import request from 'supertest';
 import { App } from '../../app';
 
 describe('HealthCheck Controller', () => {
-  it('Response 200 if Health Check Route is OK', done => {
+  it('Should response 200 if Health Check Route is OK', done => {
     request(App)
       .get('/v1/health')
       .set('Accept', 'application/json')
