@@ -8,6 +8,7 @@ describe('CurrencyConverter Controller', () => {
       .get('/v1/converter/20/USD')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
+      .expect(response => {console.log(response)})
       .expect(httpStatus.OK, done);
   });
 
@@ -16,6 +17,7 @@ describe('CurrencyConverter Controller', () => {
       .get('/v1/converter/20/BRA')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
+      .expect(response => {console.log(response)})
       .expect(httpStatus.NOT_FOUND, done);
   });
 
