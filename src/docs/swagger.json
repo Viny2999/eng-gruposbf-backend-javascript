@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Swagger Documentation",
+    "version": "1.0.0",
+    "title": "Grupo SBF Backend Challenge"
+  },
+  "servers": [{ "url": "http://localhost:3001/v1" }],
+  "host": "localhost:3001",
+  "basePath": "/v1",
+  "paths": {
+    "/converter/{currency}": {
+      "get": {
+        "tags": [
+          "Currency Converter"
+        ],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "currency",
+            "in": "path",
+            "description": "The monetary unit of a Country",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Operation",
+            "schema": {
+              "type": "array"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {},
+  "components": {}
+}
