@@ -1,6 +1,5 @@
 import { Routes } from './controllers/v1';
 import express, { Request, Response } from 'express';
-import * as httpStatus from 'http-status';
 import { NOT_FOUND } from './utils/errors.json';
 import { LoggerService } from './services';
 import * as dotenv from 'dotenv';
@@ -14,10 +13,12 @@ const host = process.env.HOST || 'localhost';
 
 app.use('/v1', Routes);
 
-app.use((req: Request, res: Response) => res.status(httpStatus.NOT_FOUND).send(NOT_FOUND));
+app.use((req: Request, res: Response) => res.status(404).send(NOT_FOUND));
 
-app.listen(port, () =>
-  logger.info(`The Web Server is Listening at http://${host}:${port}`)
-);
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () =>
+    logger.info(`The Web Server is Listening at http://${host}:${port}`)
+  );
+}
 
 export const App: express.Application = app;

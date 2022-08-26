@@ -7,7 +7,7 @@
     "build": "tsc --build",
     "start": "npm run build && node dist/app.js",
     "dev": "NODE_ENV=dev nodemon src/app.ts",
-    "test": "LOG_LEVEL=test jest ./src/tests -i --colors --verbose --maxConcurrency=1 --runInBand --forceExit",
+    "test": "LOG_LEVEL=test jest ./src/tests -i --colors --verbose --forceExit",
     "lint": "eslint . --ext .ts && echo '✔  Your .ts files look good.'"
   },
   "dependencies": {
