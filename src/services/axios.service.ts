@@ -4,7 +4,7 @@ dotenv.config();
 
 export class AxiosService {
 
-  public getInstance(): AxiosInstance {
+  public getInstance = (): AxiosInstance => {
     const axiosInstance = axios.create({
       baseURL: process.env.BASE_URL
     });

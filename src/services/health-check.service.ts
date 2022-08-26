@@ -6,7 +6,7 @@ const logger = LoggerService.getLogger();
 
 export class HealthCheckService {
 
-  public checkHealth(req: Request, res: Response): Response {
+  public checkHealth = (req: Request, res: Response): Response => {
     logger.debug('HealthCheckService :: checkHealth :: Status of application retrivied');
 
     const secondsToMilliseconds = seconds => seconds * 1000;

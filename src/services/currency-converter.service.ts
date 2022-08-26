@@ -9,15 +9,26 @@ const BASE_URL = process.env.BASE_URL;
 
 export class CurrencyConverterService {
 
-  public async converter(req: Request, res: Response): Promise<Response> {
+  public converter = async (req: Request, res: Response): Promise<Response> => {
     logger.debug('CurrencyConverterService :: converter :: a currency converter is requested!');
 
     const value = req.params.value as any;
     const currencies = req.params.currencies.replace(/\s+/, '') .split(',');
 
-    const currenciesFiltered = currencies.filter(currency => currency !== '');
+    try {
+      const currenciesSellValues = await this.converterValue(value, currencies);
+      return res.send(currenciesSellValues);    
+    } catch (error) {
+      const status = error.response.data.status;
+      const message = error.response.data.message;
 
-    console.log(currenciesFiltered);
+      logger.error('CurrencyConverterService :: converter :: Error : ', message);
+      return res.status(status).send({ message: message });
+    }
+  }
+
+  public converterValue = async (value: number, currencies: string[]): Promise<any> => {
+    const currenciesFiltered = currencies.filter(currency => currency !== '');
 
     const currenciesKeys = currenciesFiltered.map(currency => {
       return {
@@ -37,19 +48,16 @@ export class CurrencyConverterService {
     let response;
 
     try {
-      response = await (await axios.get(URLMounted)).data;
+      response = await (await axios.get(URLMounted)).data;      
     } catch (error) {
-      const status = error.response.data.status;
-      const message = error.response.data.message;
-
-      logger.error('CurrencyConverterService :: converter :: Error : ', message);
-      return res.status(status).send({ message: message });
+      throw error
     }
 
     currenciesKeys.forEach(currency => {
-      currenciesSellValues[currency.name] = (response[currency.key].ask * value);
+      currenciesSellValues[currency.name] = (response[currency.key].ask * value).toFixed(2);
     });
-    
-    return res.send(currenciesSellValues);    
+
+    return currenciesSellValues;
   }
+
 }
