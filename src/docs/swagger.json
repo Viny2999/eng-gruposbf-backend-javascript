@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "title": "Grupo SBF Backend Challenge"
   },
-  "servers": [{ "url": "http://localhost:3001/v1" }],
-  "host": "localhost:3001",
+  "servers": [{ "url": "http://localhost:8080/v1" }],
+  "host": "localhost:8080",
   "basePath": "/v1",
   "paths": {
     "/converter/{value}/{currency}": {
