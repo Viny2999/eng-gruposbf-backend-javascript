@@ -9,7 +9,7 @@
   "host": "localhost:3001",
   "basePath": "/v1",
   "paths": {
-    "/converter/{currency}": {
+    "/converter/{value}/{currency}": {
       "get": {
         "tags": [
           "Currency Converter"
@@ -17,9 +17,16 @@
         "produces": ["application/json"],
         "parameters": [
           {
+            "name": "value",
+            "in": "path",
+            "description": "The Value of Product",
+            "required": true,
+            "type": "number"
+          },
+          {
             "name": "currency",
             "in": "path",
-            "description": "The monetary unit of a Country",
+            "description": "The Monetary Unit of a Country",
             "required": true,
             "type": "string"
           }
