@@ -56,7 +56,7 @@ export class CurrencyConverterService {
         responsePopulatedByCache = {
           ...responsePopulatedByCache,
           ...response
-        }
+        };
 
       } catch (error) {
         throw error;
@@ -69,10 +69,10 @@ export class CurrencyConverterService {
   public populateResponseWithCache = (currenciesCached) => {
     let responseRetrieved = {};
     currenciesCached.forEach(currencyCached => {
-      responseRetrieved[currencyCached.key] = currencyCached.object
-    })
+      responseRetrieved[currencyCached.key] = currencyCached.object;
+    });
     return responseRetrieved;
-  }
+  };
 
   public filterCurrenciesRemaining = (cacheData) => cacheData.filter(currency => !currency.has);
 
@@ -86,24 +86,24 @@ export class CurrencyConverterService {
           ...currency,
           has: true,
           object: cacheService.get(currency.key)
-        }
+        };
       } else {
         return {
           ...currency,
           has: false,
           object: null
-        }
+        };
       }
     });
 
     return currenciesInCache;
-  }
+  };
 
   public storeInCacheApiReponse = async (apiReponse) => {
     for (const key in apiReponse) {
       cacheService.set(key, apiReponse[key]);
     }
-  }
+  };
 
   public filterCurrencyEmpties = (currencies: string[]): string[] => currencies.filter(currency => currency !== '');
 

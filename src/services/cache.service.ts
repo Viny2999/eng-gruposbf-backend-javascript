@@ -12,7 +12,7 @@ export class CacheService {
     } catch (error) {
       logger.error('CacheService :: setCache :: Error ', error);
     }
-  }
+  };
 
   public get = (key: string): any => {
     try {
@@ -22,13 +22,13 @@ export class CacheService {
     } catch (error) {
       logger.error('CacheService :: getCache :: Error ', error);
     }
-  }
+  };
 
   public checkKey = (key: string) => {
     return cache.has(key);
-  }
+  };
 
   public deleteKey = (key: string) => {
     return cache.del(key);
-  }
+  };
 }
