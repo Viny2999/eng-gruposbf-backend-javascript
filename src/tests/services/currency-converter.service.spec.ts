@@ -60,7 +60,7 @@ describe('CurrencyConverter Service', () => {
   });
   
   describe('createCurrenciesParams method', () => {
-    const currenciesParamsExpected = 'USD-BRL,EUR-BRL,'
+    const currenciesParamsExpected = 'USD-BRL,EUR-BRL,';
     it('should return right params', () => {
       const currenciesParams = currencyConverterService.createCurrenciesParams(currencies);
       expect(currenciesParams).toStrictEqual(currenciesParamsExpected);

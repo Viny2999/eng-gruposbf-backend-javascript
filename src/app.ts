@@ -19,6 +19,6 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () =>
     logger.info(`The Web Server is Listening at http://${host}:${port}`)
   );
-};
+}
 
 export const App: express.Application = app;
