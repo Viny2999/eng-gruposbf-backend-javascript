@@ -1,4 +1,4 @@
-import { HealthCheckService } from '../services';
+import { HealthCheckService } from '../../services';
 import { Router } from 'express';
 
 const router = Router();
