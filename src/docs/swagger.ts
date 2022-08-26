@@ -1,12 +1,15 @@
-{
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const swaggerDef = {
   "openapi": "3.0.0",
   "info": {
     "description": "Swagger Documentation",
     "version": "1.0.0",
     "title": "Grupo SBF Backend Challenge"
   },
-  "servers": [{ "url": "http://localhost:8080/v1" }],
-  "host": "localhost:8080",
+  "servers": [{ "url": `${process.env.URL}/v1` }],
+  "host": `${process.env.URL}`,
   "basePath": "/v1",
   "paths": {
     "/converter/{value}/{currency}": {
@@ -45,3 +48,5 @@
   "definitions": {},
   "components": {}
 }
+
+export const SwaggerDefinition = swaggerDef;
