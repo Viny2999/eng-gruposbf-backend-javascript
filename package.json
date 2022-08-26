@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/app.ts",
+    "build": "tsc --build",
+    "start": "npm run build && node dist/app.js",
     "dev": "NODE_ENV=dev nodemon src/app.ts",
     "test": "LOG_LEVEL=test jest -i --colors --verbose --forceExit",
     "lint": "eslint . --ext .ts && echo '✔  Your .ts files look good.'"
@@ -31,7 +32,7 @@
     "nodemon": "2.0.19",
     "supertest": "6.2.4",
     "ts-jest": "28.0.8",
-    "typescript": "4.8.2"
+    "typescript": "^4.8.2"
   },
   "repository": {
     "type": "git",
