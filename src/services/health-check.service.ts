@@ -18,5 +18,5 @@ export class HealthCheckService {
       uptime: uptimeHumanDate,
       creator: 'Vinicius Menezes',
     });
-  }
+  };
 }

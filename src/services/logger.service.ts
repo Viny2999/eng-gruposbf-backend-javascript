@@ -8,5 +8,5 @@ export class LoggerService {
     logger.level = process.env.LOG_LEVEL || 'info';
 
     return logger;
-  }
+  };
 }
