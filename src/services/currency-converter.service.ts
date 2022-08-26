@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
+import * as httpStatus from 'http-status';
 import { LoggerService } from './logger.service';
+import { CacheService } from './cache.service';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -7,49 +9,137 @@ dotenv.config();
 const logger = LoggerService.getLogger();
 const BASE_URL = process.env.BASE_URL;
 
+const cacheService = new CacheService();
+
 export class CurrencyConverterService {
 
-  public async converter(req: Request, res: Response): Promise<Response> {
+  public converter = async (req: Request, res: Response): Promise<Response> => {
     logger.debug('CurrencyConverterService :: converter :: a currency converter is requested!');
 
-    const value = req.params.value as any;
+    const valueToConvert = req.params.value as any;
     const currencies = req.params.currencies.replace(/\s+/, '') .split(',');
 
-    const currenciesFiltered = currencies.filter(currency => currency !== '');
-
-    console.log(currenciesFiltered);
-
-    const currenciesKeys = currenciesFiltered.map(currency => {
-      return {
-        name: currency,
-        key: `${currency}BRL`
-      };
-    });
-
-    const currenciesParams = currenciesFiltered.reduce((acc, currentValue) => {
-      return acc += `${currentValue}-BRL,`;
-    }, '');
-
-    const currenciesParamsParsed = currenciesParams.slice(0, -1);
-    const URLMounted = `${BASE_URL}/${currenciesParamsParsed}`;
-
-    let currenciesSellValues = {};
-    let response;
-
     try {
-      response = await (await axios.get(URLMounted)).data;
+      const currenciesSellValues = await this.converterValue(valueToConvert, currencies);
+      return res.send(currenciesSellValues);    
     } catch (error) {
-      const status = error.response.data.status;
-      const message = error.response.data.message;
+      const status = error.response?.data.status;
+      if (status === 404) {
+        const message = error.response.data.message;
+        logger.error('CurrencyConverterService :: converter :: Error : ', message);
+        return res.status(status).send({ message: message });
+      } else {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ message: error.message });
+      }
+    }
+  };
 
-      logger.error('CurrencyConverterService :: converter :: Error : ', message);
-      return res.status(status).send({ message: message });
+  public converterValue = async (valueToConvert: number, currencies: string[]): Promise<any> => {
+    const currenciesFiltered = this.filterCurrencyEmpties(currencies);
+
+    const currenciesKeys = this.currenciesKeyMapping(currenciesFiltered);
+
+    const cacheData = this.getInCacheApiReponse(currenciesKeys);
+
+    const currenciesRemaining = this.filterCurrenciesRemaining(cacheData);
+
+    const currenciesCached = this.filterCurrenciesCached(cacheData);
+
+    let responsePopulatedByCache = this.populateResponseWithCache(currenciesCached);
+
+    if (currenciesRemaining.length !== 0) {
+      try {
+        const URLMounted = this.createCurrencyApiUrl(currenciesRemaining);
+        const response = await (await axios.get(URLMounted)).data;
+        this.storeInCacheApiReponse(response);
+
+        responsePopulatedByCache = {
+          ...responsePopulatedByCache,
+          ...response
+        };
+
+      } catch (error) {
+        throw error;
+      }
     }
 
-    currenciesKeys.forEach(currency => {
-      currenciesSellValues[currency.name] = (response[currency.key].ask * value);
+    return this.parseCurrenciesSellValues(currenciesKeys, responsePopulatedByCache, valueToConvert);
+  };
+
+  public populateResponseWithCache = (currenciesCached) => {
+    let responseRetrieved = {};
+    currenciesCached.forEach(currencyCached => {
+      responseRetrieved[currencyCached.key] = currencyCached.object;
     });
-    
-    return res.send(currenciesSellValues);    
-  }
+    return responseRetrieved;
+  };
+
+  public filterCurrenciesRemaining = (cacheData) => cacheData.filter(currency => !currency.has);
+
+  public filterCurrenciesCached = (cacheData) => cacheData.filter(currency => currency.has);
+
+  public getInCacheApiReponse = (currenciesKeys): any[] => {
+    const currenciesInCache = currenciesKeys.map(currency => {
+      const hasKey = cacheService.checkKey(currency.key);
+      if (hasKey) {
+        return {
+          ...currency,
+          has: true,
+          object: cacheService.get(currency.key)
+        };
+      } else {
+        return {
+          ...currency,
+          has: false,
+          object: null
+        };
+      }
+    });
+
+    return currenciesInCache;
+  };
+
+  public storeInCacheApiReponse = async (apiReponse) => {
+    for (const key in apiReponse) {
+      cacheService.set(key, apiReponse[key]);
+    }
+  };
+
+  public filterCurrencyEmpties = (currencies: string[]): string[] => currencies.filter(currency => currency !== '');
+
+  public currenciesKeyMapping = (currencies: string[]) => currencies.map(currency => {
+    return {
+      name: currency,
+      key: `${currency}BRL`
+    };
+  });
+
+  public createCurrenciesParams = (currencies: any[]) => currencies.reduce((acc, currentValue) => {
+    return acc += `${currentValue.name}-BRL,`;
+  }, '');
+
+  public createCurrencyApiUrl = (currencies: any[]) => {
+    const currenciesParams = this.createCurrenciesParams(currencies);
+
+    const currenciesParamsParsed = currenciesParams.slice(0, -1);
+    return `${BASE_URL}/${currenciesParamsParsed}`;
+  };
+
+  public parseCurrenciesSellValues = (currenciesKeys, apiReponse, valueToConvert) => {
+    let currenciesSellValues = {};
+
+    currenciesKeys.forEach(currency => {
+      
+      const sellValue = apiReponse[currency.key].ask;
+      const valueCalculated = this.calculateValue(valueToConvert, sellValue);
+      currenciesSellValues[currency.name] = valueCalculated;
+    });
+
+    return currenciesSellValues;
+  };
+
+  public useTwoDecimalPlaces = (numberToParse: number) => numberToParse.toFixed(2);
+
+  public calculateValue = (valueToConvert, sellValue) => this.useTwoDecimalPlaces((sellValue * valueToConvert));
+
 }

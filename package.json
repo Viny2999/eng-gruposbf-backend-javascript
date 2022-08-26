@@ -19,6 +19,7 @@
     "joi": "17.6.0",
     "log4js": "6.6.1",
     "moment": "2.29.4",
+    "node-cache": "5.1.2",
     "swagger-ui-express": "4.5.0",
     "ts-node": "10.9.1"
   },
