@@ -1,4 +1,4 @@
-import { Routes } from './controllers';
+import { Routes } from './controllers/v1';
 import express, { Request, Response } from 'express';
 import { NOT_FOUND } from './utils/errors.json';
 import { LoggerService } from './services';
