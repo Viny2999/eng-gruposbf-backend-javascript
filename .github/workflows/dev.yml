@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [ dev ]
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Lint Stage
+        run: npm run lint
+
+      - name: Test Stage
+        run: npm run test
