@@ -25,6 +25,13 @@ The application makes a request to the External API [api-de-moedas](https://docs
 ## Swagger
 * `/v1/docs` - Contains a Swagger Page.
 
+## How to Converte
+* `/v1/converter/{value}/{currencies}`: 
+
+  In `value` insert the number to convert, in `currencies` insert the currencies separeted by comma.
+
+  Like: `/v1/converter/2000/USD,EUR`
+
 ## Tests
 To start jest unit tests run:
 ```
