@@ -18,4 +18,12 @@ describe('CurrencyConverter Controller', () => {
       .expect('Content-Type', /json/)
       .expect(httpStatus.NOT_FOUND, done);
   });
+
+  it('Should response 422 if Value not is number', done => {
+    request(App)
+      .get('/v1/converter/aa/USD')
+      .set('Accept', 'application/json')
+      .expect('Content-Type', /json/)
+      .expect(httpStatus.UNPROCESSABLE_ENTITY, done);
+  });
 });
