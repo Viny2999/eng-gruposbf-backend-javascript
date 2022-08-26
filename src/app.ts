@@ -8,7 +8,7 @@ dotenv.config();
 const logger = LoggerService.getLogger();
 
 const app: express.Application = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const host = process.env.HOST || 'localhost';
 
 app.use('/v1', Routes);
